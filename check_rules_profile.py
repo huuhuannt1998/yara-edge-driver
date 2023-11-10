@@ -56,7 +56,7 @@ rule {rule_name}
     return rule
 
 # Provide the path to the YAML file
-yaml_file_path = 'normal-contactSensor-v1.yaml'  # Replace with the actual file path
+yaml_file_path = 'normal-presenceSensor-v1.yaml'  # Replace with the actual file path
 
 # Read the YAML content from the file
 with open(yaml_file_path, 'r') as file:
