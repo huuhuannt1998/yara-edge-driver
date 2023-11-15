@@ -3,10 +3,9 @@ rule SmartThingsEdgeDriverSourceCode
 {
     meta:
         description = "YARA rule to match SmartThings Edge Driver Source Code based on extracted identifiers"
-        author = "Generated from source code analysis"
+        author = "Huan Bui"
 
     strings:
-        $test_value = "123"
         $test_0 = "test"
         $require_1 = "require"
         $integration_test_2 = "integration_test"

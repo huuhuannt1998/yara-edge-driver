@@ -1,42 +1,39 @@
+import yaml
 import re
 
-# Function to read a YARA file and extract its strings
-def read_yara_strings(file_path):
+# Function to extract variables from YARA rule
+def extract_yara_variables(file_path):
     with open(file_path, 'r') as file:
         yara_content = file.read()
 
-    # Extracting strings: Format assumed as $<string_name> = "<string_value>"
-    strings = re.findall(r'\$(\w+) = "([^"]+)"', yara_content)
-    return {name: value for name, value in strings}
+    # YARA rule format is: $<variable_name> = "<variable_value>"
+    return re.findall(r'\$(\w+) = "([^"]+)"', yara_content)
 
-# Function to compare two YARA files
-def compare_yara_files(file1_path, file2_path):
-    yara1_strings = read_yara_strings(file1_path)
-    yara2_strings = read_yara_strings(file2_path)
+# Function to extract variables from Lua source code
+def extract_lua_variables(file_path):
+    with open(file_path, 'r') as file:
+        lua_code = file.read()
 
-    # Find common and unique strings
-    common_strings = {k: v for k, v in yara1_strings.items() if k in yara2_strings and yara1_strings[k] == yara2_strings[k]}
-    unique_to_yara1 = {k: v for k, v in yara1_strings.items() if k not in yara2_strings}
-    unique_to_yara2 = {k: v for k, v in yara2_strings.items() if k not in yara1_strings}
+    # Extract variable names
+    return re.findall(r'\b(?:local\s+)?(\w+)\s*=?', lua_code)
 
-    return common_strings, unique_to_yara1, unique_to_yara2
+# Extract variables
+yara_variables = extract_yara_variables('profile.yaml')  
+lua_variables = extract_lua_variables('source_code.lua') 
 
-# Replace these with your actual YARA file paths
-yara_file1_path = 'profile.yara'
-yara_file2_path = 'src_code.yara'
+# Convert to sets for comparison
+yara_variable_names = set(name for name, _ in yara_variables)
+lua_variable_names = set(lua_variables)
 
-# Compare the YARA files
-common, unique_to_file1, unique_to_file2 = compare_yara_files(yara_file1_path, yara_file2_path)
+# Find common and missing variables
+common_variables = yara_variable_names & lua_variable_names
+missing_in_yara = lua_variable_names - yara_variable_names
 
-# Display the results
-print("Common Strings:")
-for name, value in common.items():
-    print(f"{name}: {value}")
+# Report findings
+print("Common Variables in Both YARA and Lua:")
+for var in common_variables:
+    print(var)
 
-print("\nUnique to File 1:")
-for name, value in unique_to_file1.items():
-    print(f"{name}: {value}")
-
-print("\nUnique to File 2:")
-for name, value in unique_to_file2.items():
-    print(f"{name}: {value}")
+print("\nVariables in Lua Missing in YARA:")
+for var in missing_in_yara:
+    print(var)

@@ -24,7 +24,7 @@ def extract_yaml_attributes(yaml_content):
 # Function to create a YARA rule from the list of YAML attributes
 def create_yara_rule_from_attributes(attributes, rule_name="SmartThingsEdgeDriverProfile"):
     strings_section = "\n".join(
-        f'        ${key}_{i} = "{value}"' 
+        f'        $var_{i} = "{value}"' 
         for i, (key, value) in enumerate(attributes)
     )
     rule = f"""
@@ -32,19 +32,21 @@ rule {rule_name}
 {{
     meta:
         description = "YARA rule to match SmartThings Edge Driver Profile based on YAML attributes"
-        author = "Generated based on YAML profile"
+        author = "Huan Bui"
 
     strings:
 {strings_section}
 
     condition:
-        any of them
+        for any of ($var*) : ( $ at entrypoint )
+        and not $var1 contains "0" and not $var1 contains "1"
+        and not $var2 contains "0" and not $var2 contains "1"
 }}
 """
     return rule
 
 # Paths to the files
-yaml_file_path = 'normal-presenceSensor-v1.yaml'  # Replace with your actual YAML file path
+yaml_file_path = 'profile.yaml'  # Replace with your actual YAML file path
 
 # Read the YAML file content
 yaml_content = read_yaml_file(yaml_file_path)

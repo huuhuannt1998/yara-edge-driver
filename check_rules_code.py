@@ -23,7 +23,7 @@ rule {rule_name}
 {{
     meta:
         description = "YARA rule to match SmartThings Edge Driver Source Code based on extracted identifiers"
-        author = "Generated from source code analysis"
+        author = "Huan Bui"
 
     strings:
 {strings_section}
@@ -35,7 +35,7 @@ rule {rule_name}
     return rule
 
 # Paths to the files
-source_code_file_path = 'normal-presenceSensor-v1.lua'  # Replace with your actual file path
+source_code_file_path = 'source_code.lua'  # Replace with your actual file path
 
 # Read the source code file content
 source_code = read_source_code(source_code_file_path)
