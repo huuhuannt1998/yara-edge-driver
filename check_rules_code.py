@@ -15,7 +15,7 @@ def extract_source_code_identifiers(source_code):
 # Function to create a YARA rule from the list of identifiers
 def create_yara_rule_from_identifiers(identifiers, rule_name="SmartThingsEdgeDriverSourceCode"):
     strings_section = "\n".join(
-        f'        ${identifier}_{i} = "{identifier}"' 
+        f'        $var_{i} = "{identifier}"' 
         for i, identifier in enumerate(identifiers)
     )
     rule = f"""

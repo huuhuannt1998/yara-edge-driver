@@ -1,39 +1,37 @@
-import yaml
 import re
 
-# Function to extract variables from YARA rule
-def extract_yara_variables(file_path):
-    with open(file_path, 'r') as file:
-        yara_content = file.read()
+def extract_yara_variable_values(file_content):
+    # Extracting variable values from the strings section
+    return set(re.findall(r'\$[a-zA-Z0-9_]+ = "([^"]+)"', file_content))
 
-    # YARA rule format is: $<variable_name> = "<variable_value>"
-    return re.findall(r'\$(\w+) = "([^"]+)"', yara_content)
+def compare_variable_values(file1_content, file2_content):
+    values_file1 = extract_yara_variable_values(file1_content)
+    values_file2 = extract_yara_variable_values(file2_content)
 
-# Function to extract variables from Lua source code
-def extract_lua_variables(file_path):
-    with open(file_path, 'r') as file:
-        lua_code = file.read()
+    # Find common and different values
+    common_values = values_file1 & values_file2
+    different_values_file1 = values_file1 - values_file2
+    different_values_file2 = values_file2 - values_file1
 
-    # Extract variable names
-    return re.findall(r'\b(?:local\s+)?(\w+)\s*=?', lua_code)
+    return common_values, different_values_file1, different_values_file2
 
-# Extract variables
-yara_variables = extract_yara_variables('profile.yaml')  
-lua_variables = extract_lua_variables('source_code.lua') 
+def format_output(section_title, values):
+    output = f"{section_title}:\n"
+    for value in sorted(values):
+        output += f"- {value}\n"
+    return output
 
-# Convert to sets for comparison
-yara_variable_names = set(name for name, _ in yara_variables)
-lua_variable_names = set(lua_variables)
+# Read the YARA file contents
+with open('profile.yara', 'r') as file:
+    profile_yara_content = file.read()
 
-# Find common and missing variables
-common_variables = yara_variable_names & lua_variable_names
-missing_in_yara = lua_variable_names - yara_variable_names
+with open('src_code.yara', 'r') as file:
+    src_code_yara_content = file.read()
 
-# Report findings
-print("Common Variables in Both YARA and Lua:")
-for var in common_variables:
-    print(var)
+# Compare variable values
+common_vals, diff_vals_profile, diff_vals_src_code = compare_variable_values(profile_yara_content, src_code_yara_content)
 
-print("\nVariables in Lua Missing in YARA:")
-for var in missing_in_yara:
-    print(var)
+# Format and print output
+print(format_output("Common Variable Values", common_vals))
+print(format_output("Variable Values in Profile YARA but not in Source Code", diff_vals_profile))
+print(format_output("Variable Values in Source Code YARA but not in Profile", diff_vals_src_code))
