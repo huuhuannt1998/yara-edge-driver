@@ -38,9 +38,7 @@ rule {rule_name}
 {strings_section}
 
     condition:
-        for any of ($var*) : ( $ at entrypoint )
-        and not $var1 contains "0" and not $var1 contains "1"
-        and not $var2 contains "0" and not $var2 contains "1"
+        any of them
 }}
 """
     return rule
