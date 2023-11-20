@@ -1,147 +1,130 @@
-local test = require "integration_test"
+-- Hue Motion Sensor ver 0.2.3
+-- Copyright 2021-2023 Jaewon Park (iquix)
+--
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--     http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+
 local capabilities = require "st.capabilities"
+local ZigbeeDriver = require "st.zigbee"
+local defaults = require "st.zigbee.defaults"
+local clusters = require "st.zigbee.zcl.clusters"
+local cluster_base = require "st.zigbee.cluster_base"
 local data_types = require "st.zigbee.data_types"
-local zcl_clusters = require "st.zigbee.zcl.clusters"
-local zigbee_test_utils = require "integration_test.zigbee_test_utils"
-local t_utils = require "integration_test.utils"
 
-local utils = require "test.utils"
+-- adding handler
 
-local tuya_types = require "st.zigbee.generated.zcl_clusters.TuyaEF00.types"
-
-local profile = t_utils.get_profile_definition("normal-presenceSensor-v1.yaml")
-
-test.load_all_caps_from_profile(profile)
-
-local mock_parent_device = test.mock_device.build_test_zigbee_device({
-  profile = profile,
-  zigbee_endpoints = {
-    [1] = {
-      id = 1,
-      manufacturer = "_TZE200_ztc6ggyl",
-      model = "TS0601",
-      server_clusters = { 0x0000, 0xEF00 },
-      client_clusters = { }
-    },
-  },
-  fingerprinted_endpoint_id = 0x01
-})
-
-local test_init = function ()
-  utils.send_spell(mock_parent_device)
-
-  test.mock_device.add_test_device(mock_parent_device)
+local function handle_temp_offset(driver, device, command)
+    local offset = command.args.value
+    -- Store the offset in the device's state
+    device:set_field("preferences.tempOffSet", offset, {persist = true})
+    -- Optionally, trigger an update to recalculate temperature with new offset
+    update_temperature(device)
 end
 
-test.register_message_test("device_lifecycle added", {
-  {
-    channel = "device_lifecycle",
-    direction = "receive",
-    message = { mock_parent_device.id, "added" },
-  },
-  -- {
-  --   channel = "zigbee",
-  --   direction = "send",
-  --   message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.McuSyncTime(mock_parent_device) },
-  -- },
-  {
-    channel = "zigbee",
-    direction = "send",
-    message = utils.expect_spell(mock_parent_device),
-  },
-  {
-    channel = "capability",
-    direction = "send",
-    message = utils.expect_settings(mock_parent_device, '<table style="font-size:0.6em;min-width:100%"><tbody><tr><th align="left" style="width:50%">detection_delay</th><td style="width:50%">1</td></tr><tr><th align="left" style="width:50%">fading_time</th><td style="width:50%">90</td></tr><tr><th align="left" style="width:50%">far_detection</th><td style="width:50%">1000</td></tr><tr><th align="left" style="width:50%">near_detection</th><td style="width:50%">0</td></tr><tr><th align="left" style="width:50%">sensitivity</th><td style="width:50%">7</td></tr></tbody></table>'),
-  },
-  {
-    channel = "device_lifecycle",
-    direction = "receive",
-    message = { mock_parent_device.id, "init" },
-  },
-}, {
-  test_init = test_init
-})
+local function report_temperature(device, raw_temperature)
+    local offset = device:get_field("preferences.tempOffSet") or 0
+    local adjusted_temperature = raw_temperature + offset
+    -- Report the adjusted temperature
+    device:emit_event(capabilities.temperatureMeasurement.temperature(adjusted_temperature))
+end
 
-test.register_message_test(
-  "From zigbee (DP 1) - presence sensor",
-  {
-    {
-      channel = "zigbee",
-      direction = "receive",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataReport:build_test_rx(mock_parent_device, { { 1, data_types.Boolean(true) } }) }
-    },
-    {
-      channel = "capability",
-      direction = "send",
-      message = mock_parent_device:generate_test_message("main", capabilities.presenceSensor.presence.present())
-    },
-  }, {
-    test_init = test_init
-  }
-)
 
-test.register_message_test(
-  "From zigbee (DP 104) - illuminance measurement",
-  {
-    {
-      channel = "zigbee",
-      direction = "receive",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataReport:build_test_rx(mock_parent_device, { { 104, tuya_types.Uint32(234) } }) }
-    },
-    {
-      channel = "capability",
-      direction = "send",
-      message = mock_parent_device:generate_test_message("main", capabilities.illuminanceMeasurement.illuminance(1822))
-    },
-  }, {
-    test_init = test_init
-  }
-)
+local function occupancy_attr_handler(driver, device, occupancy, zb_rx)
+	device:emit_event(
+		occupancy.value == 1 and capabilities.motionSensor.motion.active() or capabilities.motionSensor.motion.inactive())
+end
 
-test.register_message_test(
-  "infoChanged settings",
-  {
-    {
-      channel = "device_lifecycle",
-      direction = "receive",
-      message = mock_parent_device:generate_info_changed({
-        preferences = {
-          profile = "normal_presenceSensor_v1",
-          prefSensitivity = 4,
-          prefNearDetection = 15,
-          prefFarDetection = 85,
-          prefDetectionDelay = 4,
-          prefFadingTime = 10,
-        }
-      })
+local function illuminance_attr_handler(driver, device, value, zb_rx)
+	-- illuminance handler is explicitly defined because of the error in the default built-in zigbee handler.
+	local lux_value = math.floor(10 ^ ((value.value - 1) / 10000))
+	device:emit_event(capabilities.illuminanceMeasurement.illuminance(lux_value))
+end
+
+local function set_sensitivity(device)
+	local sensitivityTable = {sensitivityLow = 0, sensitivityMedium = 1, sensitivityHigh = 2, sensitivityVeryHigh = 3, sensitivityMax = 4}
+	local motionSensitivity = device.preferences.motionSensitivityAvoidSTError or device.preferences.motionSensitivity
+	device:send(cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
+		data_types.Uint8, sensitivityTable[motionSensitivity]))
+end
+
+local function do_configure(self, device)
+	device:configure()
+	set_sensitivity(device)
+end
+
+local function device_info_changed(driver, device, event, args)
+	if args.old_st_store.preferences.motionSensitivityAvoidSTError ~= device.preferences.motionSensitivityAvoidSTError or args.old_st_store.preferences.motionSensitivity ~= device.preferences.motionSensitivity then
+		set_sensitivity(device)
+	end
+end
+
+-- registration for tempOffSet
+local driver_template = {
+    supported_capabilities = {
+        -- Other capabilities
+        capabilities["preferences.tempOffSet"] = {
+            capability_handlers = {
+                [capabilities["preferences.tempOffSet"].commands.setOffset.NAME] = handle_temp_offset
+            }
+        },
+        -- Other capabilities
     },
-    {
-      channel = "zigbee",
-      direction = "send",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataRequest(mock_parent_device, { { 101, tuya_types.Uint32(4) } }) }
-    },
-    {
-      channel = "zigbee",
-      direction = "send",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataRequest(mock_parent_device, { { 102, tuya_types.Uint32(10) } }) }
-    },
-    {
-      channel = "zigbee",
-      direction = "send",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataRequest(mock_parent_device, { { 4, tuya_types.Uint32(85) } }) }
-    },
-    {
-      channel = "zigbee",
-      direction = "send",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataRequest(mock_parent_device, { { 3, tuya_types.Uint32(15) } }) }
-    },
-    {
-      channel = "zigbee",
-      direction = "send",
-      message = { mock_parent_device.id, zcl_clusters.TuyaEF00.commands.DataRequest(mock_parent_device, { { 2, tuya_types.Uint32(4) } }) }
-    },
-  }, {
-    test_init = test_init
-  }
-)
+    -- Other driver configuration
+}
+
+local hue_motion_driver = {
+	supported_capabilities = {
+		capabilities.motionSensor,
+		capabilities.temperatureMeasurement,
+		capabilities.illuminanceMeasurement,
+		capabilities.battery,
+	},
+	zigbee_handlers = {
+		attr = {
+			[clusters.OccupancySensing.ID] = {
+				[clusters.OccupancySensing.attributes.Occupancy.ID] = occupancy_attr_handler
+			},
+			[clusters.IlluminanceMeasurement.ID] = {
+				[clusters.IlluminanceMeasurement.attributes.MeasuredValue.ID] = illuminance_attr_handler
+			}
+		}
+	},
+	cluster_configurations = {
+		[capabilities.motionSensor.ID] = {
+			{
+				cluster = clusters.OccupancySensing.ID,
+				attribute = clusters.OccupancySensing.attributes.Occupancy.ID,
+				minimum_interval = 1,
+				maximum_interval = 300,
+				data_type = data_types.Bitmap8
+			}
+		},
+		[capabilities.illuminanceMeasurement.ID] = {
+			{
+				cluster = clusters.IlluminanceMeasurement.ID,
+				attribute = clusters.IlluminanceMeasurement.attributes.MeasuredValue.ID,
+				minimum_interval = 5,
+				maximum_interval = 300,
+				data_type = data_types.Uint16,
+				reportable_change = 1000
+			}
+		}
+	},
+	lifecycle_handlers = {
+		infoChanged = device_info_changed,
+		doConfigure = do_configure
+	}
+}
+
+defaults.register_for_default_handlers(hue_motion_driver, hue_motion_driver.supported_capabilities)
+local zigbee_driver = ZigbeeDriver("hue-motion-sensor", hue_motion_driver)
+zigbee_driver:run()

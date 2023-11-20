@@ -1,0 +1,4 @@
+name: "test-driver"
+packageKey: "com.smartthings.helloworld"
+permissions:
+  discovery: {}
