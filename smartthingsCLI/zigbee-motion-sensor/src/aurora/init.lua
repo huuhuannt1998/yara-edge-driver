@@ -11,38 +11,22 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
+local capabilities = require "st.capabilities"
 
-local battery_defaults = require "st.zigbee.defaults.battery_defaults"
-
-local battery_table = {
-  [2.80] = 100,
-  [2.70] = 100,
-  [2.60] = 100,
-  [2.50] = 90,
-  [2.40] = 90,
-  [2.30] = 70,
-  [2.20] = 70,
-  [2.10] = 50,
-  [2.00] = 50,
-  [1.90] = 30,
-  [1.80] = 30,
-  [1.70] = 15,
-  [1.60] = 1,
-  [1.50] = 0
-}
-
-local function init_handler(driver, device)
-  battery_defaults.enable_battery_voltage_table(device, battery_table)
+local function added_handler(self, device)
+  -- Aurora Smart PIR Sensor doesn't report when there is no motion during pairing process
+  -- reports are sent only if there is motion detected, so fake event is needed here
+  device:emit_event(capabilities.motionSensor.motion.inactive())
 end
 
-local smartthings_motion = {
-  NAME = "SmartThings Motion Sensor",
+local aurora_motion_driver = {
+  NAME = "Aurora Motion Sensor",
   lifecycle_handlers = {
-    init = init_handler
+    added = added_handler,
   },
   can_handle = function(opts, driver, device, ...)
-    return device:get_manufacturer() == "SmartThings"
+    return device:get_manufacturer() == "Aurora" and device:get_model() == "MotionSensor51AU"
   end
 }
 
-return smartthings_motion
+return aurora_motion_driver

@@ -14,35 +14,25 @@
 
 local battery_defaults = require "st.zigbee.defaults.battery_defaults"
 
-local battery_table = {
-  [2.80] = 100,
-  [2.70] = 100,
-  [2.60] = 100,
-  [2.50] = 90,
-  [2.40] = 90,
-  [2.30] = 70,
-  [2.20] = 70,
-  [2.10] = 50,
-  [2.00] = 50,
-  [1.90] = 30,
-  [1.80] = 30,
-  [1.70] = 15,
-  [1.60] = 1,
-  [1.50] = 0
+local ZIGBEE_IRIS_MOTION_SENSOR_FINGERPRINTS = {
+  { mfr = "iMagic by GreatStar", model = "1117-S" }
 }
 
-local function init_handler(driver, device)
-  battery_defaults.enable_battery_voltage_table(device, battery_table)
+local is_zigbee_iris_motion_sensor = function(opts, driver, device)
+  for _, fingerprint in ipairs(ZIGBEE_IRIS_MOTION_SENSOR_FINGERPRINTS) do
+    if device:get_manufacturer() == fingerprint.mfr and device:get_model() == fingerprint.model then
+      return true
+    end
+  end
+  return false
 end
 
-local smartthings_motion = {
-  NAME = "SmartThings Motion Sensor",
+local iris_motion_handler = {
+  NAME = "Iris Motion Handler",
   lifecycle_handlers = {
-    init = init_handler
+    init = battery_defaults.build_linear_voltage_init(2.4, 2.7)
   },
-  can_handle = function(opts, driver, device, ...)
-    return device:get_manufacturer() == "SmartThings"
-  end
+  can_handle = is_zigbee_iris_motion_sensor
 }
 
-return smartthings_motion
+return iris_motion_handler
