@@ -61,13 +61,13 @@ local function device_added(driver, device)
 local function handle_temp_offset(driver, device, command)
     local offset = command.args.value
     -- Store the offset in the device's state
-    device:set_field("preferences.tempOffSet", offset, {persist = true})
+    device:set_field("device.preferences.tempOffSet", offset, {persist = true})
     -- Optionally, trigger an update to recalculate temperature with new offset
     update_temperature(device)
 end
 
 local function report_temperature(device, raw_temperature)
-    local offset = device:get_field("preferences.tempOffSet") or 0
+    local offset = device:get_field("device.preferences.tempOffSet") or 0
     local adjusted_temperature = raw_temperature + offset
     -- Report the adjusted temperature
     device:emit_event(capabilities.temperatureMeasurement.temperature(adjusted_temperature))
