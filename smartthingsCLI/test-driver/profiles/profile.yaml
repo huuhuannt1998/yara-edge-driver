@@ -1,28 +1,19 @@
-name: hue-motion-sensor
+name: motion-temp-battery
 components:
-- id: main
-  capabilities:
-  - id: motionSensor
-    version: 1
-  - id: temperatureMeasurement
-    version: 1
-  - id: illuminanceMeasurement
-    version: 1
-  - id: battery
-    version: 1
-  categories:
-  - name: MotionSensor
+  - id: main
+    capabilities:
+      - id: motionSensor
+        version: 1
+      - id: temperatureMeasurement
+        version: 1
+      - id: battery
+        version: 1
+      - id: firmwareUpdate
+        version: 1
+      - id: refresh
+        version: 1
+    categories:
+      - name: MotionSensor
 preferences:
   - preferenceId: tempOffset
     explicit: true
-  - name: motionSensitivity
-    title: "Motion Sensitivity Level"
-    required: true
-    preferenceId: motionSensitivityAvoidSTError
-    preferenceType: enumeration
-    definition:
-      options:
-        sensitivityLow: "Low"
-        sensitivityMedium: "Medium"
-        sensitivityHigh: "High"
-      default: sensitivityHigh
