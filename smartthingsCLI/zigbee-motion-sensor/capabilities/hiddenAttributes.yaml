@@ -17,7 +17,3 @@ components:
 preferences:
   - preferenceId: tempOffset
     explicit: true
-  - preferenceId: MinReportingInterval
-    explicit: true
-  - preferenceId: MaxReportingInterval
-    explicit: true

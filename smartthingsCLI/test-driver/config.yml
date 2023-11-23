@@ -1,4 +1,6 @@
-name: "test-driver"
-packageKey: "com.smartthings.yara-project"
+name: 'Zigbee Motion Sensor'
+packageKey: 'zigbee-motion-sensor'
 permissions:
-  discovery: {}
+  zigbee: {}
+description: "SmartThings driver for Zigbee motion sensor devices"
+vendorSupportInformation: "https://support.smartthings.com"
