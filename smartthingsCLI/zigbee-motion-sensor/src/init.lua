@@ -31,48 +31,11 @@ local battery_table = {
   [1.50] = 0
 }
 
-
------------------------------------------------------------------
--- local functions
------------------------------------------------------------------
--- this is called once a device is added by the cloud and synchronized down to the hub
-local function device_added(driver, device)
-	log.info("[" .. device.id .. "] Adding new YARA Project device")
-  
-	-- set a default or queried state for each capability attribute
-	device:emit_event(capabilities.switch.switch.on())
+local function check_interval(driver, device, event, args)
+  if (device.preferences.minReportingInterval < 30)  && (device.preferences.minReportingInterval > 3600) then
+    device:send("Error test")
   end
-  
-  -- this is called both when a device is added (but after `added`) and after a hub reboots.
-  local function device_init(driver, device)
-	log.info("[" .. device.id .. "] Initializing YARA Project device")
-  
-	-- mark device as online so it can be controlled from the app
-	device:online()
-  end
-  
-  -- this is called when a device is removed by the cloud and synchronized down to the hub
-  local function device_removed(driver, device)
-	log.info("[" .. device.id .. "] Removing YARA Project device")
-  end
-
--- adding handler of hidden atrribute
-
-local function handle_temp_offset(driver, device, command)
-    local offset = command.args.value
-    -- Store the offset in the device's state
-    device:set_field("device.preferences.tempOffSet", offset, {persist = true})
-    -- Optionally, trigger an update to recalculate temperature with new offset
-    update_temperature(device)
 end
-
-local function report_temperature(device, raw_temperature)
-    local offset = device:get_field("device.preferences.tempOffSet") or 0
-    local adjusted_temperature = raw_temperature + offset
-    -- Report the adjusted temperature
-    device:emit_event(capabilities.temperatureMeasurement.temperature(adjusted_temperature))
-end
-
 
 local function init_handler(driver, device)
   battery_defaults.enable_battery_voltage_table(device, battery_table)
@@ -86,21 +49,6 @@ local smartthings_motion = {
   can_handle = function(opts, driver, device, ...)
     return device:get_manufacturer() == "SmartThings"
   end
-}
-
-
--- registration for tempOffSet
-local driver_template = {
-    supported_capabilities = {
-        -- Other capabilities
-        capabilities["preferences.tempOffSet"] = {
-            capability_handlers = {
-                [capabilities["preferences.tempOffSet"].commands.setOffset.NAME] = handle_temp_offset
-            }
-        },
-        -- Other capabilities
-    },
-    -- Other driver configuration
 }
 
 return smartthings_motion

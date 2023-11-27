@@ -17,7 +17,21 @@ components:
 preferences:
   - preferenceId: tempOffset
     explicit: true
-  - preferenceId: MinReportingInterval
-    explicit: true
-  - preferenceId: MaxReportingInterval
-    explicit: true
+  - name: "minReportingInterval"
+    title: "Select Minimun Reporting Interval Value"
+    description: "Min Time Report Interval time in seconds"
+    required: true
+    preferenceType: integer
+    definition:
+      minimum: 30
+      maximum: 3600
+      default: 30
+  - name: "maxReportingInterval"
+    title: "Select Max Reporting Interval Value"
+    description: "Max Time Report Interval time in seconds"
+    required: true
+    preferenceType: integer
+    definition:
+      minimum: 30
+      maximum: 3600
+      default: 3600
