@@ -71,6 +71,7 @@ local battery_table = {
 --   end
 -- }
 
+-- https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers/blob/178d0f8667c06b7a97ee639b7eb936a08f6358af/drivers/SmartThings/zigbee-lock/src/lock_utils.lua#L31
 -- Get min and max Interval // Apply this code 12/01
 
 lock_utils.get_min = function(device)
