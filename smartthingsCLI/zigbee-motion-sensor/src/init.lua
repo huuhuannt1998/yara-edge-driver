@@ -11,7 +11,8 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-
+local capabilities = require "st.capabilities"
+local ZigbeeDriver = require "st.zigbee"
 local battery_defaults = require "st.zigbee.defaults.battery_defaults"
 
 local battery_table = {
@@ -69,6 +70,44 @@ local battery_table = {
 --     return device:get_manufacturer() == "SmartThings"
 --   end
 -- }
+
+-- Get min and max Interval // Apply this code 12/01
+
+lock_utils.get_min = function(device)
+  local lc = device:get_field(lock_utils.LOCK_CODES)
+  return lc ~= nil and lc or {}
+end
+
+lock_utils.get_min = function(device)
+  local lc = device:get_field(lock_utils.LOCK_CODES)
+  return lc ~= nil and lc or {}
+end
+
+lock_utils.lock_codes_event = function(device, lock_codes)
+  device:set_field(lock_utils.LOCK_CODES, lock_codes, { persist = true } )
+  device:emit_event(capabilities.lockCodes.lockCodes(json.encode(utils.deep_copy(lock_codes)), { visibility = { displayed = false } }))
+end
+
+
+function lock_utils.get_code_name(device, code_id)
+  if (device:get_field(lock_utils.CODE_STATE) ~= nil and device:get_field(lock_utils.CODE_STATE)["setName"..code_id] ~= nil) then
+    -- this means a code set operation succeeded
+    return device:get_field(lock_utils.CODE_STATE)["setName"..code_id]
+  elseif (lock_utils.get_lock_codes(device)[code_id] ~= nil) then
+    return lock_utils.get_lock_codes(device)[code_id]
+  else
+    return "Code " .. code_id
+  end
+end
+
+function lock_utils.get_change_type(device, code_id)
+  if (lock_utils.get_lock_codes(device)[code_id] == nil) then
+    return " set"
+  else
+    return " changed"
+  end
+end
+-- End get min max
 
 -- Handler to check reporting intervals
 local function interval_check_handler(driver, device)
