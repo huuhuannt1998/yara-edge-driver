@@ -14,6 +14,9 @@
 local capabilities = require "st.capabilities"
 local ZigbeeDriver = require "st.zigbee"
 local battery_defaults = require "st.zigbee.defaults.battery_defaults"
+local detectMin = capabilities["stse.detectionMin"]
+local detectMax = capabilities["stse.detectionMax"]
+local aqara_utils = require "motion_utils"
 
 local battery_table = {
   [2.80] = 100,
@@ -71,42 +74,19 @@ local battery_table = {
 --   end
 -- }
 
--- https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers/blob/178d0f8667c06b7a97ee639b7eb936a08f6358af/drivers/SmartThings/zigbee-lock/src/lock_utils.lua#L31
+-- https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers/blob/fb05027f64b7c866c8f54e821a7c7a717f4e3eb1/drivers/SmartThings/zigbee-motion-sensor/src/aqara/aqara_utils.lua
+-- SmartThingsEdgeDrivers/drivers/SmartThings/zigbee-motion-sensor/src/aqara/aqara_utils.lua
 -- Get min and max Interval // Apply this code 12/01
 
-lock_utils.get_min = function(device)
-  local lc = device:get_field(lock_utils.LOCK_CODES)
-  return lc ~= nil and lc or {}
+local function get_pref_changed_field(device)
+  local key = device:get_field(PREF_CHANGED_KEY) or ''
+  local value = device:get_field(PREF_CHANGED_VALUE) or 0
+  return key, value
 end
 
-lock_utils.get_min = function(device)
-  local lc = device:get_field(lock_utils.LOCK_CODES)
-  return lc ~= nil and lc or {}
-end
-
-lock_utils.lock_codes_event = function(device, lock_codes)
-  device:set_field(lock_utils.LOCK_CODES, lock_codes, { persist = true } )
-  device:emit_event(capabilities.lockCodes.lockCodes(json.encode(utils.deep_copy(lock_codes)), { visibility = { displayed = false } }))
-end
-
-
-function lock_utils.get_code_name(device, code_id)
-  if (device:get_field(lock_utils.CODE_STATE) ~= nil and device:get_field(lock_utils.CODE_STATE)["setName"..code_id] ~= nil) then
-    -- this means a code set operation succeeded
-    return device:get_field(lock_utils.CODE_STATE)["setName"..code_id]
-  elseif (lock_utils.get_lock_codes(device)[code_id] ~= nil) then
-    return lock_utils.get_lock_codes(device)[code_id]
-  else
-    return "Code " .. code_id
-  end
-end
-
-function lock_utils.get_change_type(device, code_id)
-  if (lock_utils.get_lock_codes(device)[code_id] == nil) then
-    return " set"
-  else
-    return " changed"
-  end
+local function set_pref_changed_field(device, key, value)
+  device:set_field(PREF_CHANGED_KEY, key)
+  device:set_field(PREF_CHANGED_VALUE, value)
 end
 -- End get min max
 
