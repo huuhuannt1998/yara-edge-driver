@@ -14,6 +14,10 @@ The main profile I use in this project is motion-temp-battery.yml. In this proje
 
 Goal: I need to make them show on the UI. When users update the min and max values in the setting, they will show on the main page of the device.
 
+# Install the edge driver
+
+You can follow these steps to install the edge driver for the motion sensor: https://developer.smartthings.com/docs/devices/hub-connected/driver-components-and-structure#profiles
+
 # Src:
 
 In the init.lua, I have addded handlers in order to handle the events when we change the values of minReportingInterval and maxReportingInterval. I have got the logic for the minReportingInterval and maxReportingInterval which is
