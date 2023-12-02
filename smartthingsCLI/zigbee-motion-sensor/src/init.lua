@@ -78,16 +78,21 @@ local battery_table = {
 -- SmartThingsEdgeDrivers/drivers/SmartThings/zigbee-motion-sensor/src/aqara/aqara_utils.lua
 -- Get min and max Interval // Apply this code 12/01
 
-local function get_pref_changed_field(device)
-  local key = device:get_field(PREF_CHANGED_KEY) or ''
-  local value = device:get_field(PREF_CHANGED_VALUE) or 0
-  return key, value
+local function get_pref_min(device)
+  return device:get_field(device.preferences.minReportingInterval)
 end
 
-local function set_pref_changed_field(device, key, value)
-  device:set_field(PREF_CHANGED_KEY, key)
-  device:set_field(PREF_CHANGED_VALUE, value)
+local function set_pref_min(device,value)
+  device:set_field(device.preferences.minReportingInterval, value)
 end
+
+local function get_pref_max(device)
+    return device:get_field(device.preferences.maxReportingInterval)
+end
+  
+local function set_pref_max(device, value)
+    device:set_field(device.preferences.maxReportingInterval, value)
+end 
 -- End get min max
 
 local detectionMin = capabilities["stse.detectionMin"]
