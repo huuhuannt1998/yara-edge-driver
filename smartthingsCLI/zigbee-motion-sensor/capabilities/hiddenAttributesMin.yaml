@@ -1,7 +1,7 @@
 id: stse.detectionMin
 version: 1
 status: proposed
-name: Detection Frequency
+name: Detection Min Interval
 ephemeral: false
 attributes:
   detectionFrequency:
@@ -10,25 +10,25 @@ attributes:
       properties:
         value:
           type: integer
-          minimum: 2
-          maximum: 180
+          minimum: 30
+          maximum: 3600
         unit:
           type: string
           enum:
-            - sec
-          default: sec
+            - min
+          default: min
       additionalProperties: false
       required:
         - value
-    setter: setDetectionFrequency
+    setter: setDetectionMin
     enumCommands: []
 commands:
   setDetectionFrequency:
-    name: setDetectionFrequency
+    name: setDetectionMin
     arguments:
-      - name: frequency
+      - name: minInterval
         optional: false
         schema:
           type: integer
-          minimum: 2
-          maximum: 180
+          minimum: 30
+          maximum: 3600

@@ -90,10 +90,19 @@ local function set_pref_changed_field(device, key, value)
 end
 -- End get min max
 
+local detectionMin = capabilities["stse.detectionMin"]
+local setDetectionMin = "setDetectionMin"
+
+local detectionMax = capabilities["stse.detectionMax"]
+local setDetectionMax = "setDetectionMax"
+
+print("Checkpoint 1 - Min 1:", detectionMin)
 -- Handler to check reporting intervals
 local function interval_check_handler(driver, device)
   local minInterval = device.preferences.minReportingInterval
   local maxInterval = device.preferences.maxReportingInterval
+
+  print("Checkpoint 2 - Min 2:", minInterval)
 
   if minInterval < 30 or maxInterval > 3600 then
     driver:log("Error: Reporting interval is out of acceptable range")

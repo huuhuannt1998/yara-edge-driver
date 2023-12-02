@@ -3,25 +3,18 @@ local capabilities = require "st.capabilities"
 local motion_utils = {}
 
 
-
-local function get_pref_changed_min(device)
-  local key = device:get_field(PREF_CHANGED_KEY) or ''
-  local value = device:get_field(PREF_CHANGED_VALUE) or 0
-  return key, value
+local function get_pref_min(device)
+  return device:get_field(device.preferences.minReportingInterval)
 end
 
-local function set_pref_changed_min(device, key, value)
-  device:set_field(PREF_CHANGED_KEY, key)
-  device:set_field(PREF_CHANGED_VALUE, value)
+local function set_pref_min(device,value)
+  device:set_field(device.preferences.minReportingInterval, value)
 end
 
-local function get_pref_changed_max(device)
-    local key = device:get_field(PREF_CHANGED_KEY) or ''
-    local value = device:get_field(PREF_CHANGED_VALUE) or 0
-    return key, value
-  end
+local function get_pref_max(device)
+    return device:get_field(device.preferences.maxReportingInterval)
+end
   
-  local function set_pref_changed_max(device, key, value)
-    device:set_field(PREF_CHANGED_KEY, key)
-    device:set_field(PREF_CHANGED_VALUE, value)
-  end
+local function set_pref_max(device, value)
+    device:set_field(device.preferences.maxReportingInterval, value)
+end 
