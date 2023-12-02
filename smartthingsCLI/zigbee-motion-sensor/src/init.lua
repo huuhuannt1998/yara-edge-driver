@@ -111,7 +111,6 @@ local function interval_check_handler(driver, device)
 
   if minInterval < 30 or maxInterval > 3600 then
     driver:log("Error: Reporting interval is out of acceptable range")
-    -- You can add additional error handling here if needed
   end
 end
 
