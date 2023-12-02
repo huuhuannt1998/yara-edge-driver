@@ -4,6 +4,10 @@ The main edge driver we use in this project is zigbee-motion-sensor.
 
 In side zigbee-motion-sensor folder, we have 3 folders: capabilities, profiles, and src
 
+# Install the edge driver
+
+You can follow these steps to install the edge driver for the motion sensor: https://developer.smartthings.com/docs/devices/hub-connected/driver-components-and-structure#profiles
+
 # Capabilities:
 
 I created two custom capabilities to show the min and max interval time (hiddenAttributesMin and hiddenAttributesMax). The custom capabilities are used for showing the values of minReportingInterval and minReportingInterval in the preferences.
@@ -13,10 +17,6 @@ I created two custom capabilities to show the min and max interval time (hiddenA
 The main profile I use in this project is motion-temp-battery.yml. In this project, I added two custom preferences which are minReportingInterval and maxReportingInterval
 
 Goal: I need to make them show on the UI. When users update the min and max values in the setting, they will show on the main page of the device.
-
-# Install the edge driver
-
-You can follow these steps to install the edge driver for the motion sensor: https://developer.smartthings.com/docs/devices/hub-connected/driver-components-and-structure#profiles
 
 # Src:
 
