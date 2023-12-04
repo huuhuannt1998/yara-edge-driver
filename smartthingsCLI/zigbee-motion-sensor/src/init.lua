@@ -113,6 +113,7 @@ local function interval_check_handler(driver, device)
   if minInterval < 30 or maxInterval > 3600 then
     driver:log("Error: Reporting interval is out of acceptable range")
     driver:log("Check point 2")
+    print("CP 2")
   end
 end
 
@@ -133,6 +134,7 @@ end
 local function init_handler(driver, device)
   battery_defaults.enable_battery_voltage_table(device, battery_table)
   driver:log("Check point 3")
+  print("CP3")
   interval_check_handler(driver, device)  -- Call interval check during initialization
 end
 
@@ -143,9 +145,11 @@ local smartthings_motion = {
     init = init_handler,
     infoChanged = preferences_changed_handler
     driver:log("Check point 4")
+    print("CP 4")
   },
   can_handle = function(opts, driver, device, ...)
     driver:log("Check point 5")
+    print("CP 5")
     return device:get_manufacturer() == "SmartThings"
   end
 }
