@@ -1,4 +1,4 @@
-local capabilities = require "st.capabilities"
+-- local capabilities = require "st.capabilities"
 
 local motion_utils = {}
 
@@ -18,3 +18,5 @@ end
 local function set_pref_max(device, value)
     device:set_field(device.preferences.maxReportingInterval, value)
 end 
+
+return motion_utils

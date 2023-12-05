@@ -54,3 +54,12 @@ local function set_pref_max(device, value)
     device:set_field(device.preferences.maxReportingInterval, value)
 end
 ```
+
+# Update 12/04
+
+I got the customize capabilities in the profile without errors.
+
+# Challenges (update 12/04/2023):
+
+Register this profile with SmartThings using CLI or API
+Now reference those registered custom capabilities in motion-temp-battery.yml

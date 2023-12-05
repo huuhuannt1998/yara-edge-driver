@@ -1,34 +1,16 @@
-id: stse.detectionMin
+name: "minReportingInterval"
+id: "namespace.minReportingInterval"
 version: 1
-status: proposed
-name: Detection Min Interval
-ephemeral: false
 attributes:
-  detectionFrequency:
+  minInterval:
     schema:
-      type: object
-      properties:
-        value:
-          type: integer
-          minimum: 30
-          maximum: 3600
-        unit:
-          type: string
-          enum:
-            - min
-          default: min
-      additionalProperties: false
-      required:
-        - value
-    setter: setDetectionMin
+      type: "integer"
+    setter: "setMinInterval"
     enumCommands: []
 commands:
-  setDetectionFrequency:
-    name: setDetectionMin
+  setMinInterval:
+    name: "setMinInterval"
     arguments:
-      - name: minInterval
-        optional: false
+      - name: "value"
         schema:
-          type: integer
-          minimum: 30
-          maximum: 3600
+          type: "integer"

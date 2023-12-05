@@ -1,34 +1,16 @@
-id: stse.detectionMax
+name: "maxReportingInterval"
+id: "namespace.maxReportingInterval"
 version: 1
-status: proposed
-name: Detection Max Interval
-ephemeral: false
 attributes:
-  detectionFrequency:
+  maxInterval:
     schema:
-      type: object
-      properties:
-        value:
-          type: integer
-          minimum: 30
-          maximum: 3600
-        unit:
-          type: string
-          enum:
-            - max
-          default: max
-      additionalProperties: false
-      required:
-        - value
-    setter: setDetectionMax
+      type: "integer"
+    setter: "setMaxInterval"
     enumCommands: []
 commands:
-  setDetectionFrequency:
-    name: setDetectionMax
+  setMaxInterval:
+    name: "setMaxInterval"
     arguments:
-      - name: maxInterval
-        optional: false
+      - name: "value"
         schema:
-          type: integer
-          minimum: 30
-          maximum: 3600
+          type: "integer"
