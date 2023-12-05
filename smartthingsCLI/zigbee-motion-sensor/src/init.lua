@@ -26,8 +26,8 @@ local battery_table = {
 local detectionMaxCapability = capabilities["stse.detectionMax"]
 local detectionMinCapability = capabilities["stse.detectionMin"]
 
-local minReportingIntervalCapability = capabilities["namespace.minReportingInterval"]
-local maxReportingIntervalCapability = capabilities["namespace.maxReportingInterval"]
+local minReportingIntervalCapability = capabilities["app.minReportingInterval"]
+local maxReportingIntervalCapability = capabilities["app.maxReportingInterval"]
 
 -- Handlers for min/max reporting interval capabilities
 local function handleMinReportingInterval(driver, device, command)
@@ -61,9 +61,9 @@ local function handleDetectionMin(driver, device, command)
 end
 
 -- Handler for when a device is added to the SmartThings ecosystem
-local function device_added(driver, device)
-  print("Device added: " .. device.id)
-  device:refresh()
+function device_added(driver, device)
+  device:emit_event(minReportingIntervalCapability.minInterval(30)) 
+  device:emit_event(maxReportingIntervalCapability.maxInterval(3600))
 end
 
 -- Handler for when a device is removed from the SmartThings ecosystem
@@ -72,9 +72,9 @@ local function device_removed(driver, device)
 end
 
 -- Handler for when a device is initialized
-local function device_init(driver, device)
-  print("Device initialized: " .. device.id)
-  device:emit_event(capabilities.motionSensor.motion.inactive())
+function device_init(driver, device)
+  device:emit_event(minReportingIntervalCapability.minInterval(30))
+  device:emit_event(maxReportingIntervalCapability.maxInterval(3600)) 
 end
 
 -- Handler for configuring the device - typically used for Zigbee or Z-Wave devices
@@ -83,6 +83,11 @@ local function device_doconfigure(driver, device)
   -- Example for a Zigbee device: device:configure()
 end
 
+function handleMinReportingInterval(driver, device, command)
+  local value = command.args.value   
+  print("New min interval:", value)
+  device:emit_event(minReportingIntervalCapability.minInterval(value))
+end
 
 -- Driver Template
 local driver_template = {

@@ -62,4 +62,11 @@ I got the customize capabilities in the profile without errors.
 # Challenges (update 12/04/2023):
 
 Register this profile with SmartThings using CLI or API
+
 Now reference those registered custom capabilities in motion-temp-battery.yml
+
+Note for custom capabilities:
+
+https://community.smartthings.com/t/edge-drivers-driver-presentation-and-custom-capabilities/249290
+
+https://developer.smartthings.com/docs/devices/capabilities/custom-capabilities

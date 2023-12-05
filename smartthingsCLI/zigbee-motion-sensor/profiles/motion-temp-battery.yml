@@ -16,13 +16,13 @@ components:
       - name: MotionSensor
 
 capabilities:
-  - id: namespace.minReportingInterval
+  - id: app.minReportingInterval
     attributes:
       minInterval:
         schema:
           type: integer
 
-  - id: namespace.maxReportingInterval
+  - id: app.maxReportingInterval
     attributes:
       maxInterval:
         schema:
