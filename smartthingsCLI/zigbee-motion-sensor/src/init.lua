@@ -3,6 +3,14 @@ local capabilities = require "st.capabilities"
 local Driver = require "st.driver"
 local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
+local minInterValue = capabilities["app.minReportingInterval"]
+local maxInterValue = capabilities["app.maxReportingInterval"]
+
+
+local minReportingIntervalCapability = capabilities["app.minReportingInterval"]
+
+print("Min reporting interval: " .. require("st.utils").stringify(minReportingIntervalCapability))
+
 
 -- Battery percentage table
 local battery_table = {
@@ -83,10 +91,27 @@ local function device_doconfigure(driver, device)
   -- Example for a Zigbee device: device:configure()
 end
 
+
 function handleMinReportingInterval(driver, device, command)
+
+  local current = device:get_field(minReportingIntervalCapability.minInterval)
+  
+  print("Previous min interval: " .. current)
+
   local value = command.args.value   
-  print("New min interval:", value)
   device:emit_event(minReportingIntervalCapability.minInterval(value))
+
+end
+
+function handleMaxReportingInterval(driver, device, command)
+
+  local current = device:get_field(maxReportingIntervalCapability.maxInterval)
+  
+  print("Previous max interval: " .. current)
+
+  local value = command.args.value   
+  device:emit_event(maxReportingIntervalCapability.maxInterval(value))
+
 end
 
 -- Driver Template

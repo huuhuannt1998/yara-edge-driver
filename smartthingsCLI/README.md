@@ -70,3 +70,11 @@ Note for custom capabilities:
 https://community.smartthings.com/t/edge-drivers-driver-presentation-and-custom-capabilities/249290
 
 https://developer.smartthings.com/docs/devices/capabilities/custom-capabilities
+
+# Update 12/05
+
+Creating presentations for Max and Min values
+
+Example of custom capabilities and presentation
+
+https://github.com/SmartThingsDevelopers/SampleDrivers/blob/main/custom-capability/src/init.lua#L7

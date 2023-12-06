@@ -1,0 +1,8 @@
+# Presentation for maxReportingInterval
+dashboard:
+  states:
+    - label: "{{maxReportingInterval.maxInterval}} seconds"
+
+detailView:
+  - label: Maximum Reporting Interval
+    value: "{{maxReportingInterval.maxInterval}} seconds"

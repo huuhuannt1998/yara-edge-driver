@@ -1,16 +1,16 @@
+# Custom capability definition
 name: "minReportingInterval"
-id: "namespace.minReportingInterval"
+id: "app.minReportingInterval"
 version: 1
+
 attributes:
   minInterval:
     schema:
-      type: "integer"
-    setter: "setMinInterval"
-    enumCommands: []
+      type: integer
+
 commands:
   setMinInterval:
-    name: "setMinInterval"
     arguments:
-      - name: "value"
+      - name: value
         schema:
-          type: "integer"
+          type: integer

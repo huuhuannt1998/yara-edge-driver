@@ -1,16 +1,15 @@
+# similarly definition for maxReportingInterval
 name: "maxReportingInterval"
-id: "namespace.maxReportingInterval"
-version: 1
+id: "app.maxReportingInterval"
+
 attributes:
   maxInterval:
     schema:
-      type: "integer"
-    setter: "setMaxInterval"
-    enumCommands: []
+      type: integer
+
 commands:
   setMaxInterval:
-    name: "setMaxInterval"
     arguments:
-      - name: "value"
+      - name: value
         schema:
-          type: "integer"
+          type: integer
