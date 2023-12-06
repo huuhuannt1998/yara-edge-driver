@@ -58,15 +58,15 @@ local function handleDetectionFrequency(device, value, isMax)
 end
 
 -- Handlers for custom capabilities
-local function handleDetectionMax(driver, device, command)
-  local maxValue = command.args.value
-  handleDetectionFrequency(device, maxValue, true)
-end
+-- local function handleDetectionMax(driver, device, command)
+--   local maxValue = command.args.value
+--   handleDetectionFrequency(device, maxValue, true)
+-- end
 
-local function handleDetectionMin(driver, device, command)
-  local minValue = command.args.value
-  handleDetectionFrequency(device, minValue, false)
-end
+-- local function handleDetectionMin(driver, device, command)
+--   local minValue = command.args.value
+--   handleDetectionFrequency(device, minValue, false)
+-- end
 
 -- Handler for when a device is added to the SmartThings ecosystem
 function device_added(driver, device)
@@ -129,12 +129,12 @@ local driver_template = {
     doConfigure = device_doconfigure,
   },
   capability_handlers = {
-    [detectionMaxCapability.ID] = {
-      [detectionMaxCapability.commands.setDetectionMax.NAME] = handleDetectionMax
-    },
-    [detectionMinCapability.ID] = {
-      [detectionMinCapability.commands.setDetectionMin.NAME] = handleDetectionMin
-    },
+    -- [detectionMaxCapability.ID] = {
+    --   [detectionMaxCapability.commands.setDetectionMax.NAME] = handleDetectionMax
+    -- },
+    -- [detectionMinCapability.ID] = {
+    --   [detectionMinCapability.commands.setDetectionMin.NAME] = handleDetectionMin
+    -- },
     [minReportingIntervalCapability.ID] = {
       [minReportingIntervalCapability.commands.setMinInterval.NAME] = handleMinReportingInterval  
     },
