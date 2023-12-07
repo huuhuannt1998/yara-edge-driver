@@ -1,6 +1,6 @@
 # similarly definition for maxReportingInterval
 name: "maxReportingInterval"
-id: "app.maxReportingInterval"
+id: "instantforge19660.maxReportingInterval"
 
 attributes:
   maxInterval:

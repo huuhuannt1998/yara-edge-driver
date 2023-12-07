@@ -1,13 +1,8 @@
-# Custom capability definition
-name: "minReportingInterval"
-id: "instantforge19660.minreportinginterval"
-version: 1
-
+name: minReportingInterval
 attributes:
   minInterval:
     schema:
       type: integer
-
 commands:
   setMinInterval:
     arguments:

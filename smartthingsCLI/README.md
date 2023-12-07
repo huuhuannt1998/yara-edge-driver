@@ -78,3 +78,9 @@ Creating presentations for Max and Min values
 Example of custom capabilities and presentation
 
 https://github.com/SmartThingsDevelopers/SampleDrivers/blob/main/custom-capability/src/init.lua#L7
+
+Tutorial: https://community.smartthings.com/t/custom-capability-and-cli-developer-preview/197296?page=37
+
+https://www.youtube.com/watch?v=jSg94DgItSE&t=345s
+
+https://community.smartthings.com/t/custom-capability-and-cli-developer-preview/197296

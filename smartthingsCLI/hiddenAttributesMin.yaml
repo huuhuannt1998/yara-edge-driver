@@ -1,6 +1,6 @@
 # Custom capability definition
 name: "minReportingInterval"
-id: "instantforge19660.minreportinginterval"
+id: "instantforge19660.minReportingInterval"
 version: 1
 
 attributes:
