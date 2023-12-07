@@ -29,8 +29,10 @@ components:
 #           type: integer
 
 preferences:
+  - preferenceId: tempOffset
+    explicit: true
   - name: minReportingInterval
-    capability: namespace.minReportingInterval
+    capability: instantforge19660.minreportinginterval
     title: "Min Reporting Interval"
     required: true
     preferenceType: integer
@@ -40,7 +42,7 @@ preferences:
       default: 30
 
   - name: maxReportingInterval
-    capability: namespace.maxReportingInterval
+    capability: instantforge19660.maxReportingInterval
     title: "Max Reporting Interval"
     required: true
     preferenceType: integer
@@ -51,7 +53,7 @@ preferences:
 
 tiles:
   - name: minInterval
-    capability: namespace.minReportingInterval
+    capability: instantforge19660.minreportinginterval
     attribute: minInterval
     tileFunction: generic.showValue
 

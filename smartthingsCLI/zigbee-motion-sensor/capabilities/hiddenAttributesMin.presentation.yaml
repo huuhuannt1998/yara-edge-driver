@@ -1,8 +1,0 @@
-# Presentation for minReportingInterval
-dashboard:
-  states:
-    - label: "{{minreportinginterval.minInterval}} seconds"
-
-detailView:
-  - label: Minimum Reporting Interval
-    value: "{{minreportinginterval.minInterval}} seconds"

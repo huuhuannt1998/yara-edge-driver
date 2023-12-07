@@ -7,6 +7,7 @@ attributes:
   minInterval:
     schema:
       type: integer
+    default: 30
 
 commands:
   setMinInterval:

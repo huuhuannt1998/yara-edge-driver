@@ -3,11 +3,11 @@ local capabilities = require "st.capabilities"
 local Driver = require "st.driver"
 local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
-local minReportingInterval  = capabilities["instantforge19660.minreportinginterval"]
+local minReportingInterval = require "instantforge19660.minreportinginterval"
 local maxInterValue = capabilities["instantforge19660.maxReportingInterval"]
+minReportingInterval.load_presentation()
 
-
-print("Min reporting interval: " .. require("st.utils").stringify(minReportingInterval ))
+print("Checkpoint 0")
 
 
 -- Battery percentage table
@@ -38,7 +38,7 @@ local maxReportingIntervalCapability = capabilities["instantforge19660.maxReport
 -- Handlers for min/max reporting interval capabilities
 local function handleMinReportingInterval(driver, device, command)
   local value = command.args.value  
-  device:emit_event(minReportingInterval .minInterval(value))
+  device:emit_event(minReportingInterval.minInterval(value))
 end
 
 local function handleMaxReportingInterval(driver, device, command)
@@ -68,7 +68,7 @@ end
 
 -- Handler for when a device is added to the SmartThings ecosystem
 function device_added(driver, device)
-  device:emit_event(minReportingInterval .minInterval(30)) 
+  device:emit_event(minReportingInterval.minInterval(30)) 
   device:emit_event(maxReportingIntervalCapability.maxInterval(3600))
 end
 
@@ -79,7 +79,7 @@ end
 
 -- Handler for when a device is initialized
 function device_init(driver, device)
-  device:emit_event(minReportingInterval .minInterval(30))
+  device:emit_event(minReportingInterval.minInterval(30))
   device:emit_event(maxReportingIntervalCapability.maxInterval(3600)) 
 end
 
@@ -92,12 +92,12 @@ end
 
 function handleMinReportingInterval(driver, device, command)
 
-  local current = device:get_field(minReportingInterval .minInterval)
+  local current = device:get_field(minReportingInterval.minInterval)
   
   print("Previous min interval: " .. current)
 
   local value = command.args.value   
-  device:emit_event(minReportingInterval .minInterval(value))
+  device:emit_event(minReportingInterval.minInterval(value))
 
 end
 
@@ -133,13 +133,12 @@ local driver_template = {
     -- [detectionMinCapability.ID] = {
     --   [detectionMinCapability.commands.setDetectionMin.NAME] = handleDetectionMin
     -- },
-    [minReportingInterval .ID] = {
-      [minReportingInterval .commands.setMinInterval.NAME] = handleMinReportingInterval  
+    [minReportingInterval.ID] = {
+      [minReportingInterval.commands.setMinInterval.NAME] = handleMinReportingInterval  
     },
     [maxReportingIntervalCapability.ID] = {
       [maxReportingIntervalCapability.commands.setMaxInterval.NAME] = handleMaxReportingInterval
     } 
-    -- ... handlers for other capabilities ...
   }
 }
 
