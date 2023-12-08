@@ -84,3 +84,9 @@ Tutorial: https://community.smartthings.com/t/custom-capability-and-cli-develope
 https://www.youtube.com/watch?v=jSg94DgItSE&t=345s
 
 https://community.smartthings.com/t/custom-capability-and-cli-developer-preview/197296
+
+# Update 12/08
+
+Got the minIntervalValue on the main screen of the Smartthings app. Using hiddenAttributesMin.yaml, hiddenAttributesMin_presentation.yaml, and hiddenAttributesMin_presentation.json to create the section.
+
+Update the maxIntervalValue.

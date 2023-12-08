@@ -2,6 +2,7 @@
 name: "minReportingInterval"
 id: "instantforge19660.minreportinginterval"
 version: 1
+presentation: minReportingInterval_presentation
 
 attributes:
   minInterval:

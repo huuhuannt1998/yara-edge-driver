@@ -12,6 +12,8 @@ components:
         version: 1
       - id: refresh
         version: 1
+      - id: instantforge19660.minreportinginterval
+        version: 1
     categories:
       - name: MotionSensor
 
