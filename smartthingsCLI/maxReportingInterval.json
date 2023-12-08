@@ -1,23 +1,26 @@
 {
-    "name": "minReportingInterval",
-    "id": "instantforge19660.minreportinginterval",
+    "name": "maxReportingInterval",
+    "id": "instantforge19660.maxreportinginterval",
+    "version": 1,
     "attributes": {
-      "minInterval": {
+      "maxInterval": {
         "schema": {
           "type": "integer"
-        }
+        },
+        "setter": "setMaxInterval" 
       }
     },
     "commands": {
-      "setMinInterval": {
+      "setMaxInterval": {
         "arguments": [
           {
             "name": "value",
             "schema": {
-              "type": "integer"  
+              "type": "integer"
             }
           }
         ]
       }
     }
   }
+
