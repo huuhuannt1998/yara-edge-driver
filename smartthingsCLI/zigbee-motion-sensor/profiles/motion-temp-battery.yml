@@ -33,7 +33,7 @@ preferences:
       default: 30
 
   - name: maxReportingInterval
-    capability: instantforge19660.maxReportingInterval
+    capability: instantforge19660.maxreportinginterval
     title: "Max Reporting Interval"
     required: true
     preferenceType: integer

@@ -90,3 +90,7 @@ https://community.smartthings.com/t/custom-capability-and-cli-developer-preview/
 Got the minIntervalValue on the main screen of the Smartthings app. Using hiddenAttributesMin.yaml, hiddenAttributesMin_presentation.yaml, and hiddenAttributesMin_presentation.json to create the section.
 
 Update the maxIntervalValue.
+
+# Update 12/11
+
+Cannot match the values of Min and Max in the Settings with the display. Use this tutorial to check it again. https://developer.smartthings.com/docs/devices/configurations-and-presentations/device-configurations

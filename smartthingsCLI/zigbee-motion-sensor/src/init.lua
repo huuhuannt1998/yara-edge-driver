@@ -3,12 +3,16 @@ local capabilities = require "st.capabilities"
 local Driver = require "st.driver"
 local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
+print("CP path: ", package.path)
 local minReportingInterval = require "instantforge19660.minreportinginterval"
-local maxInterValue = capabilities["instantforge19660.maxReportingInterval"]
+local maxReportingInterval = require "instantforge19660.maxreportinginterval"
+local minInterValue = capabilities["instantforge19660.minreportinginterval"]
+local maxInterValue = capabilities["instantforge19660.maxreportinginterval"]
 
 
 print("Checkpoint 0")
-
+print("minInterValue: ", minInterValue)
+print("maxInterValue: ", maxInterValue)
 
 -- Battery percentage table
 local battery_table = {
@@ -32,14 +36,12 @@ local battery_table = {
 local detectionMaxCapability = capabilities["stse.detectionMax"]
 local detectionMinCapability = capabilities["stse.detectionMin"]
 
-local minReportingIntervalCapability = capabilities["instantforge19660.minreportinginterval"]
-local maxReportingIntervalCapability = capabilities["instantforge19660.maxReportingInterval"]
 
 -- Handlers for min/max reporting interval capabilities
 function handleMinInterval(driver, device, command)
 
   local newValue = command.args.value
-
+  print("New value min:", newValue)
   device:emit_event(minReportingInterval.minInterval(newValue)) 
 
 end
@@ -47,8 +49,8 @@ end
 function handleMaxInterval(driver, device, command)
 
   local newValue = command.args.value
-
-  device:emit_event(maxReportingInterval.minInterval(newValue)) 
+  print("New value max:", newValue)
+  device:emit_event(maxReportingInterval.maxInterval(newValue)) 
 
 end
 
@@ -62,7 +64,7 @@ end
 -- Handler for when a device is added to the SmartThings ecosystem
 function device_added(driver, device)
   device:emit_event(minReportingInterval.minInterval(30)) 
-  device:emit_event(maxReportingIntervalCapability.maxInterval(3600))
+  device:emit_event(maxReportingInterval.maxInterval(3600))
 end
 
 -- Handler for when a device is removed from the SmartThings ecosystem
@@ -107,11 +109,11 @@ end
 
 -- Driver Template
 local driver_template = {
-  supported_capabilities = {
-    detectionMaxCapability,
-    detectionMinCapability,
-    -- ... other capabilities ...
-  },
+  -- supported_capabilities = {
+  --   detectionMaxCapability,
+  --   detectionMinCapability,
+  --   -- ... other capabilities ...
+  -- },
   zigbee_handlers = zigbee_handlers,
   lifecycle_handlers = {
     added = device_added,
@@ -120,18 +122,15 @@ local driver_template = {
     doConfigure = device_doconfigure,
   },
   capability_handlers = {
-    -- [detectionMaxCapability.ID] = {
-    --   [detectionMaxCapability.commands.setDetectionMax.NAME] = handleDetectionMax
-    -- },
-    -- [detectionMinCapability.ID] = {
-    --   [detectionMinCapability.commands.setDetectionMin.NAME] = handleDetectionMin
-    -- },
-    [minReportingInterval.ID] = {
-      [minReportingInterval.commands.setMinInterval.NAME] = handleMinReportingInterval  
+
+    [minReportingInterval.ID] = { 
+       [minReportingInterval.commands.setMinInterval.NAME] = handleMinInterval
     },
-    [maxReportingIntervalCapability.ID] = {
-      [maxReportingIntervalCapability.commands.setMaxInterval.NAME] = handleMaxReportingInterval
-    } 
+  
+    [maxReportingInterval.ID] = {
+       [maxReportingInterval.commands.setMaxInterval.NAME] = handleMaxInterval 
+    }
+  
   }
 }
 
