@@ -14,21 +14,10 @@ components:
         version: 1
       - id: instantforge19660.minreportinginterval
         version: 1
+      - id: instantforge19660.maxreportinginterval
+        version: 1
     categories:
       - name: MotionSensor
-
-# capabilities:
-#   - id: app.minReportingInterval
-#     attributes:
-#       minInterval:
-#         schema:
-#           type: integer
-
-#   - id: app.maxReportingInterval
-#     attributes:
-#       maxInterval:
-#         schema:
-#           type: integer
 
 preferences:
   - preferenceId: tempOffset

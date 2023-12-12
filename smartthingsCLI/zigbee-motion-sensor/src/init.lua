@@ -5,7 +5,7 @@ local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
 local minReportingInterval = require "instantforge19660.minreportinginterval"
 local maxInterValue = capabilities["instantforge19660.maxReportingInterval"]
-minReportingInterval.load_presentation()
+
 
 print("Checkpoint 0")
 
@@ -36,35 +36,28 @@ local minReportingIntervalCapability = capabilities["instantforge19660.minreport
 local maxReportingIntervalCapability = capabilities["instantforge19660.maxReportingInterval"]
 
 -- Handlers for min/max reporting interval capabilities
-local function handleMinReportingInterval(driver, device, command)
-  local value = command.args.value  
-  device:emit_event(minReportingInterval.minInterval(value))
+function handleMinInterval(driver, device, command)
+
+  local newValue = command.args.value
+
+  device:emit_event(minReportingInterval.minInterval(newValue)) 
+
 end
 
-local function handleMaxReportingInterval(driver, device, command)
-  local value = command.args.value
-  device:emit_event(maxReportingIntervalCapability.maxInterval(value)) 
+function handleMaxInterval(driver, device, command)
+
+  local newValue = command.args.value
+
+  device:emit_event(maxReportingInterval.minInterval(newValue)) 
+
 end
 
 -- Utility function to handle detection frequency change
 local function handleDetectionFrequency(device, value, isMax)
-  -- Implementation to set the detection frequency
-  -- `isMax` indicates whether it's for max or min interval
-  -- Update the device state and perform necessary actions
   local attribute = isMax and detectionMaxCapability.attributes.detectionFrequency or detectionMinCapability.attributes.detectionFrequency
   device:emit_event(attribute({ value = value, unit = isMax and "max" or "min" }))
 end
 
--- Handlers for custom capabilities
--- local function handleDetectionMax(driver, device, command)
---   local maxValue = command.args.value
---   handleDetectionFrequency(device, maxValue, true)
--- end
-
--- local function handleDetectionMin(driver, device, command)
---   local minValue = command.args.value
---   handleDetectionFrequency(device, minValue, false)
--- end
 
 -- Handler for when a device is added to the SmartThings ecosystem
 function device_added(driver, device)
@@ -90,27 +83,27 @@ local function device_doconfigure(driver, device)
 end
 
 
-function handleMinReportingInterval(driver, device, command)
+-- function handleMinReportingInterval(driver, device, command)
 
-  local current = device:get_field(minReportingInterval.minInterval)
+--   local current = device:get_field(minReportingInterval.minInterval)
   
-  print("Previous min interval: " .. current)
+--   print("Previous min interval: " .. current)
 
-  local value = command.args.value   
-  device:emit_event(minReportingInterval.minInterval(value))
+--   local value = command.args.value   
+--   device:emit_event(minReportingInterval.minInterval(value))
 
-end
+-- end
 
-function handleMaxReportingInterval(driver, device, command)
+-- function handleMaxReportingInterval(driver, device, command)
 
-  local current = device:get_field(maxReportingIntervalCapability.maxInterval)
+--   local current = device:get_field(maxReportingIntervalCapability.maxInterval)
   
-  print("Previous max interval: " .. current)
+--   print("Previous max interval: " .. current)
 
-  local value = command.args.value   
-  device:emit_event(maxReportingIntervalCapability.maxInterval(value))
+--   local value = command.args.value   
+--   device:emit_event(maxReportingIntervalCapability.maxInterval(value))
 
-end
+-- end
 
 -- Driver Template
 local driver_template = {

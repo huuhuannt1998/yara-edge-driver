@@ -1,11 +1,14 @@
-# similarly definition for maxReportingInterval
+# Custom max capability definition
 name: "maxReportingInterval"
-id: "instantforge19660.maxReportingInterval"
+id: "instantforge19660.maxreportinginterval"
+version: 1
+presentation: hiddenAttributesMax_presentation
 
 attributes:
   maxInterval:
     schema:
       type: integer
+    default: 40
 
 commands:
   setMaxInterval:
