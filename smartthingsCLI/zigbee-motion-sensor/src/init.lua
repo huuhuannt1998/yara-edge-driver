@@ -4,8 +4,12 @@ local Driver = require "st.driver"
 local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
 print("CP path: ", package.path)
-local minReportingInterval = require "instantforge19660.minreportinginterval"
-local maxReportingInterval = require "instantforge19660.maxreportinginterval"
+-- local minReportingInterval = require "instantforge19660.minreportinginterval"
+-- local maxReportingInterval = require "instantforge19660.maxreportinginterval"
+
+local minReportingInterval = capabilities["instantforge19660.minreportinginterval"]
+local maxReportingInterval = capabilities["instantforge19660.maxreportinginterval"]
+
 local minInterValue = capabilities["instantforge19660.minreportinginterval"]
 local maxInterValue = capabilities["instantforge19660.maxreportinginterval"]
 
