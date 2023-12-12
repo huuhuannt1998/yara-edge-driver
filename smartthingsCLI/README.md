@@ -94,3 +94,5 @@ Update the maxIntervalValue.
 # Update 12/11
 
 Cannot match the values of Min and Max in the Settings with the display. Use this tutorial to check it again. https://developer.smartthings.com/docs/devices/configurations-and-presentations/device-configurations
+
+![Alt text](image.png)
