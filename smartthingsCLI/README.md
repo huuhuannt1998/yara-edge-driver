@@ -104,3 +104,5 @@ The log can capture the event, but it cannot display it after fixing the code.
 # Update 12/20
 
 https://developer.smartthings.com/docs/edge-device-drivers/matter/generated/clusters/OccupancySensing.html
+
+![Alt text](image-2.png)
