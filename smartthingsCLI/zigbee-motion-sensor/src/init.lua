@@ -4,8 +4,6 @@ local Driver = require "st.driver"
 local zigbee_handlers = require "st.zigbee".zigbee_handlers
 local battery_utils = require "st.zigbee.defaults.battery_defaults"  
 print("CP path: ", package.path)
--- local minReportingInterval = require "instantforge19660.minreportinginterval"
--- local maxReportingInterval = require "instantforge19660.maxreportinginterval"
 
 local minReportingInterval = capabilities["instantforge19660.minreportinginterval"]
 local maxReportingInterval = capabilities["instantforge19660.maxreportinginterval"]
@@ -89,35 +87,9 @@ local function device_doconfigure(driver, device)
 end
 
 
--- function handleMinReportingInterval(driver, device, command)
-
---   local current = device:get_field(minReportingInterval.minInterval)
-  
---   print("Previous min interval: " .. current)
-
---   local value = command.args.value   
---   device:emit_event(minReportingInterval.minInterval(value))
-
--- end
-
--- function handleMaxReportingInterval(driver, device, command)
-
---   local current = device:get_field(maxReportingIntervalCapability.maxInterval)
-  
---   print("Previous max interval: " .. current)
-
---   local value = command.args.value   
---   device:emit_event(maxReportingIntervalCapability.maxInterval(value))
-
--- end
 
 -- Driver Template
 local driver_template = {
-  -- supported_capabilities = {
-  --   detectionMaxCapability,
-  --   detectionMinCapability,
-  --   -- ... other capabilities ...
-  -- },
   zigbee_handlers = zigbee_handlers,
   lifecycle_handlers = {
     added = device_added,
