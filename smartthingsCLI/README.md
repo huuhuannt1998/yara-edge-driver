@@ -100,3 +100,7 @@ Cannot match the values of Min and Max in the Settings with the display. Use thi
 The log can capture the event, but it cannot display it after fixing the code. 
 
 ![Alt text](image-1.png)
+
+# Update 12/20
+
+https://developer.smartthings.com/docs/edge-device-drivers/matter/generated/clusters/OccupancySensing.html

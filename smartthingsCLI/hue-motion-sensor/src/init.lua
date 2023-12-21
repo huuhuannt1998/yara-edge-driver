@@ -36,15 +36,16 @@ end
 
 
 local function set_sensitivity(device)
-	local attr_id0 = 0x0000
-	local attr_id1 = 0x0010
-	local attr_id2 = 0x0030
+	local attr_id0 = "0x0000"
+	local attr_id1 = "0x0010"
+	local attr_id2 = "0x0030"
 	local sensitivityTable = {sensitivityLow = 0, sensitivityMedium = 1, sensitivityHigh = 2, sensitivityVeryHigh = 3, sensitivityMax = 4}
 	print("Checkpoint 2: ", sensitivityTable)
 	local motionSensitivity = device.preferences.motionSensitivityAvoidSTError or device.preferences.motionSensitivity
 	print("Checkpoint 3: ", motionSensitivity)
 	device:send(cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
 		data_types.Uint8, sensitivityTable[motionSensitivity]))
+	print("Checkpoint 11: ", clusters.OccupancySensing.ID)
 	print("Checkpoint 4: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
 	data_types.Uint8, sensitivityTable[motionSensitivity]))	
 	print("Checkpoint 5: ", device.preferences.motionSensitivity)
@@ -52,9 +53,11 @@ local function set_sensitivity(device)
 	print("Checkpoint 6: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0010, 0x100b,
 	data_types.Uint8, sensitivityTable[motionSensitivity]))
 
-	print("Checkpoint 7: ", device:get_field(attr_id0))
-	print("Checkpoint 8: ", device:get_field(attr_id1))
-	print("Checkpoint 9: ", device:get_field(attr_id2))
+	print("Checkpoint 7: ", device:get_field(0x0000))
+	print("Checkpoint 8: ", device:get_field(0x0010))
+	print("Checkpoint 9: ", device:get_field(0x0030))
+
+	print("Checkpoint 10: ", clusters.OccupancySensing.ID)
 
 end
 
