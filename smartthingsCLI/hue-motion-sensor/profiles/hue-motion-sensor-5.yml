@@ -10,6 +10,10 @@ components:
     version: 1
   - id: battery
     version: 1
+  - id: instantforge19660.pirodelay
+    version: 1
+  - id: instantforge19660.motionsensitivity
+    version: 1  
   categories:
   - name: MotionSensor
 preferences:

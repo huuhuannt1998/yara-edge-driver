@@ -23,6 +23,11 @@ local data_types = require "st.zigbee.data_types"
 
 local function occupancy_attr_handler(driver, device, occupancy, zb_rx)
 	print("Checkpoint 1: ", (occupancy.value == 1 and capabilities.motionSensor.motion.active() or capabilities.motionSensor.motion.inactive()))
+	print("Checkpoint 1-1: ", driver)
+	print("Checkpoint 1-2: ", device)
+	print("Checkpoint 1-3: ", occupancy)
+	print("Checkpoint 1-4: ", zb_rx)
+	print("Checkpoint OCCUPANCY: ", clusters.OccupancySensing.ID)
 	device:emit_event(
 		occupancy.value == 1 and capabilities.motionSensor.motion.active() or capabilities.motionSensor.motion.inactive())
 end
@@ -31,9 +36,21 @@ local function illuminance_attr_handler(driver, device, value, zb_rx)
 	-- illuminance handler is explicitly defined because of the error in the default built-in zigbee handler.
 	local lux_value = math.floor(10 ^ ((value.value - 1) / 10000))
 	device:emit_event(capabilities.illuminanceMeasurement.illuminance(lux_value))
+	print("Checkpoint 2-1: ", driver)
+	print("Checkpoint 2-2: ", device)
+	print("Checkpoint 2-3: ", value)
+	print("Checkpoint 2-4: ", zb_rx)
+	print("Checkpoint ILLUMINANCE: ", clusters.OccupancySensing.ID)
 end
 
+-- local function piroDelay_attr_handler(driver, device, value, zb_rx)
+-- 	piroValue = 30
+-- 	device:emit_event(capabilities.instantforge19660.pirodelay.piroDelayValue(piroValue))
+-- end
 
+local function motionSensitivity_attr_handler(driver, device, value, zb_rx)
+	device:emit_event(capabilities.instantforge19660.motionsensitivity.motionSensitivityValue(value))
+end
 
 local function set_sensitivity(device)
 	local attr_id0 = "0x0000"
@@ -45,20 +62,18 @@ local function set_sensitivity(device)
 	print("Checkpoint 3: ", motionSensitivity)
 	device:send(cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
 		data_types.Uint8, sensitivityTable[motionSensitivity]))
-	print("Checkpoint 11: ", clusters.OccupancySensing.ID)
-	print("Checkpoint 4: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
-	data_types.Uint8, sensitivityTable[motionSensitivity]))	
-	print("Checkpoint 5: ", device.preferences.motionSensitivity)
-	print("Checkpoint 5: ", device.preferences.motionSensitivityAvoidSTError)
-	print("Checkpoint 6: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0010, 0x100b,
-	data_types.Uint8, sensitivityTable[motionSensitivity]))
+	-- print("Checkpoint 4: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0030, 0x100b,
+	-- data_types.Uint8, sensitivityTable[motionSensitivity]))	
+	-- print("Checkpoint 5: ", device.preferences.motionSensitivity)
+	-- print("Checkpoint 5: ", device.preferences.motionSensitivityAvoidSTError)
+	-- print("Checkpoint 6: ", cluster_base.write_manufacturer_specific_attribute(device, clusters.OccupancySensing.ID, 0x0010, 0x100b,
+	-- data_types.Uint8, sensitivityTable[motionSensitivity]))
 
-	print("Checkpoint 7: ", device:get_field(0x0000))
-	print("Checkpoint 8: ", device:get_field(0x0010))
-	print("Checkpoint 9: ", device:get_field(0x0030))
+	-- print("Checkpoint 7: ", device:get_field(0x0000))
 
-	print("Checkpoint 10: ", clusters.OccupancySensing.ID)
-
+	print("Checkpoint 8: ", clusters.OccupancySensing.attributes.Occupancy.read(device, nil).pretty_print())
+	-- print("Checkpoint 9: ", clusters.OccupancySensing.attributes.PIROccupiedToUnoccupiedDelay.read(device, 0x00).pretty_print())
+	-- print("Checkpoint 10: ", clusters.OccupancySensing.attributes.PhysicalContactOccupiedToUnoccupiedDelay.read(device, 0x00).pretty_print())
 end
 
 
@@ -78,6 +93,8 @@ local hue_motion_driver = {
 		capabilities.motionSensor,
 		capabilities.temperatureMeasurement,
 		capabilities.illuminanceMeasurement,
+		-- capabilities.instantforge19660.pirodelay,
+		-- capabilities.instantforge19660.motionsensitivity,
 		capabilities.battery,
 	},
 	zigbee_handlers = {
@@ -85,6 +102,9 @@ local hue_motion_driver = {
 			[clusters.OccupancySensing.ID] = {
 				[clusters.OccupancySensing.attributes.Occupancy.ID] = occupancy_attr_handler
 			},
+			-- [clusters.OccupancySensing.ID] = {
+			-- 	[clusters.OccupancySensing.attributes.Occupancy.ID] = piroDelay_attr_handler
+			-- },
 			[clusters.IlluminanceMeasurement.ID] = {
 				[clusters.IlluminanceMeasurement.attributes.MeasuredValue.ID] = illuminance_attr_handler
 			}
@@ -100,6 +120,24 @@ local hue_motion_driver = {
 				data_type = data_types.Bitmap8
 			}
 		},
+		-- [capabilities.instantforge19660.pirodelay.ID] = {
+		-- 	{
+		-- 		cluster = clusters.OccupancySensing.ID,
+		-- 		attribute = clusters.OccupancySensing.attributes.PIROccupiedToUnoccupiedDelay.ID,
+		-- 		minimum_interval = 0,
+		-- 		maximum_interval = 65534,
+		-- 		data_type = data_types.Uint16
+		-- 	}
+		-- },
+		-- [capabilities.instantforge19660.motionsensitivity.ID] = {
+		-- 	{
+		-- 		cluster = clusters.OccupancySensing.ID,
+		-- 		attribute = clusters.OccupancySensing.attributes.Occupancy.ID,
+		-- 		minimum_interval = 0,
+		-- 		maximum_interval = 2,
+		-- 		data_type = data_types.Uint8
+		-- 	}
+		-- },
 		[capabilities.illuminanceMeasurement.ID] = {
 			{
 				cluster = clusters.IlluminanceMeasurement.ID,
