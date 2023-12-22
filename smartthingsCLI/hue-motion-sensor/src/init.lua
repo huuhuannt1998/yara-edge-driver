@@ -48,9 +48,10 @@ end
 -- 	device:emit_event(capabilities.instantforge19660.pirodelay.piroDelayValue(piroValue))
 -- end
 
-local function motionSensitivity_attr_handler(driver, device, value, zb_rx)
-	device:emit_event(capabilities.instantforge19660.motionsensitivity.motionSensitivityValue(value))
-end
+-- local function motionSensitivity_attr_handler(driver, device, value, zb_rx)
+-- 	device:emit_event(capabilities.instantforge19660.motionsensitivity.motionSensitivityValue(value))
+-- end
+
 
 local function set_sensitivity(device)
 	local attr_id0 = "0x0000"
@@ -71,9 +72,9 @@ local function set_sensitivity(device)
 
 	-- print("Checkpoint 7: ", device:get_field(0x0000))
 
-	print("Checkpoint 8: ", clusters.OccupancySensing.attributes.Occupancy.read(device, nil).pretty_print())
-	-- print("Checkpoint 9: ", clusters.OccupancySensing.attributes.PIROccupiedToUnoccupiedDelay.read(device, 0x00).pretty_print())
-	-- print("Checkpoint 10: ", clusters.OccupancySensing.attributes.PhysicalContactOccupiedToUnoccupiedDelay.read(device, 0x00).pretty_print())
+	print("Checkpoint 8: ", clusters.OccupancySensing.attributes.Occupancy.VALUE)
+	print("Checkpoint 9: ", clusters.OccupancySensing.attributes.PIROccupiedToUnoccupiedDelay.NAME)
+	print("Checkpoint 10: ", clusters.OccupancySensing.attributes.PhysicalContactOccupiedToUnoccupiedDelay.NAME)
 end
 
 
