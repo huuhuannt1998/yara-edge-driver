@@ -74,7 +74,7 @@ local function set_sensitivity(device)
 
 	print("Checkpoint 8: ", clusters.OccupancySensing.attributes.Occupancy.VALUE)
 	print("Checkpoint 9: ", clusters.OccupancySensing.attributes.PIROccupiedToUnoccupiedDelay.NAME)
-	print("Checkpoint 10: ", clusters.OccupancySensing.attributes.PhysicalContactOccupiedToUnoccupiedDelay.NAME)
+	print("Checkpoint 10: ", clusters.OccupancySensing.attributes.PhysicalContactOccupiedToUnoccupiedDelay.read(device, 1))
 end
 
 
